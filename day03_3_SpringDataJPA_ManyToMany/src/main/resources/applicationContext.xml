@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/data/jpa
+		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <!--进行Spring和SpringDataJPA的整合-->
+
+    <!--1. 创建entityManagerFactory对象交给Spring容器管理-->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource" />
+        <!--配置的扫描的包(实体类所在的包)-->
+        <property name="packagesToScan" value="com.itheima.domain" />
+        <!--配置jpa的实现方式,因为jpa只是一套规范,最终还是要有东西来帮助实现和数据库交互的-->
+        <property name="persistenceProvider">
+            <!--这个bean标签的作用于仅限于此-->
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider" />
+        </property>
+
+        <!--jpa的供应商适配器,谁实现了jpa-->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <!--配置是否自动创建数据库表-->
+                <property name="generateDdl" value="false" />
+                <!--指定数据库类型,要求都是大写-->
+                <property name="database" value="MYSQL" />
+                <!--配置数据库方言,也就是数据库所特有的语法-->
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+                <!--在控制台上是否显示sql语句-->
+                <property name="showSql" value="true" />
+            </bean>
+        </property>
+        <!--jpa的方言,高级的特性,此处相当于jpa也有了hibernate的一些特有的用法-->
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+
+        <!--注入jpa的配置信息
+            加载jpa的基本配置信息和jpa实现方式(hibernate)的配置信息
+            hibernate.hbm2ddl.auto : 自动创建数据库表
+                create: 每一次都会重新创建数据库表
+                update: 有表不会重新穿件,没有表会重新创建表
+        -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--2. 创建数据库连接池-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="root" />
+        <property name="password" value="mysql" />
+        <property name="jdbcUrl" value="jdbc:mysql:///jpa" />
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+    </bean>
+
+    <!--3. spring和springDataJpa进行整合-->
+    <!--base-package的属性值是接口所在包的全限定名, +++> 意思是对这个包下面的所有接口都进行动态增强,添加好各种查询方法
+     transaction-manager-ref的属性值是 事务管理器的id值-->
+    <jpa:repositories base-package="com.itheima.dao" transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory" />
+
+    <!--4. 配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <!--5. 声名式事务,一般用在service,我们暂时不在此处进行配置-->
+
+    <!--6. 配置包扫描,扫描包下面的所有的注解-->
+    <context:component-scan base-package="com.itheima" />
+
+</beans>
