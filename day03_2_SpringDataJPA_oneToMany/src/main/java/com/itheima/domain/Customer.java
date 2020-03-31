@@ -56,7 +56,6 @@ public class Customer {
     * fetch
     *   EAGER 立即加载
     *   LAZY  延迟加载
-    *
     * */
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private Set<LinkMan> linkMans = new HashSet<LinkMan>();

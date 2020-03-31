@@ -23,7 +23,7 @@ public class CustomerJpqlTest {
     @Test
     public void findName(){
         // 这个方法是我们在接口中自己定义的
-        Customer customer = customerDao.findName("贾飞天");
+        Customer customer = customerDao.findName("贾铭威");
         System.out.println(customer);
     }
 

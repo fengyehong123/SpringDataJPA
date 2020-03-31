@@ -66,7 +66,7 @@
     <!--3. spring和springDataJpa进行整合-->
     <!--base-package的属性值是接口所在包的全限定名, +++> 意思是对这个包下面的所有接口都进行动态增强,添加好各种查询方法
      transaction-manager-ref的属性值是 事务管理器的id值-->
-    <jpa:repositories base-package="com.itheima.dao" transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory" />
+    <jpa:repositories entity-manager-factory-ref="entityManagerFactory" base-package="com.itheima.dao" transaction-manager-ref="transactionManager" />
 
     <!--4. 配置事务管理器-->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

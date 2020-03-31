@@ -38,8 +38,8 @@ public class TestJPA {
 
         // 开始保存用户入库操作
         Customer customer = new Customer();
-        customer.setCustName("刘飞天");
-        customer.setCustIndustry("电问题啊");
+        customer.setCustName("hihi");
+        customer.setCustIndustry("111");
         // 保存对象进数据库
         em.persist(customer);
 
@@ -70,7 +70,7 @@ public class TestJPA {
         // 增删改查
         // 第一个参数: 查询数据的结果需要包装的实体类类型的字节码
         // id 查询的主键
-        Customer customer = em.find(Customer.class, 1L);
+        Customer customer = em.find(Customer.class, 2L);
         System.out.println(customer);
 
         // 提交事务
