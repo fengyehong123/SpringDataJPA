@@ -18,7 +18,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <!--我们虽然使用的是JPA规范,但是这套规范仍然依托于一套框架来执行,我们依赖于hibernate框架-->
